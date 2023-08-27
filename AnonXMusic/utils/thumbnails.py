@@ -20,16 +20,7 @@ def changeImageSize(maxWidth, maxHeight, image):
     return newImage
 
 
-def clear(text):
-    list = text.split(" ")
-    title = ""
-    for i in list:
-        if len(title) + len(i) < 60:
-            title += " " + i
-    return title.strip()
-
-
-async def get_thumb(videoid):
+async def gen_thumb(videoid):
     if os.path.isfile(f"cache/{videoid}.png"):
         return f"cache/{videoid}.png"
 
@@ -60,62 +51,70 @@ async def get_thumb(videoid):
         async with aiohttp.ClientSession() as session:
             async with session.get(thumbnail) as resp:
                 if resp.status == 200:
-                    f = await aiofiles.open(f"cache/thumb{videoid}.png", mode="wb")
+                    f = await aiofiles.open(
+                        f"cache/thumb{videoid}.png", mode="wb"
+                    )
                     await f.write(await resp.read())
                     await f.close()
 
         youtube = Image.open(f"cache/thumb{videoid}.png")
-        image1 = changeImageSize(1280, 720, youtube)
+        image1 = changeImageSize(1280, 720, youtube)  
+        sex = changeImageSize(900, 380, youtube)
         image2 = image1.convert("RGBA")
-        background = image2.filter(filter=ImageFilter.BoxBlur(10))
+        background = image2.filter(filter=ImageFilter.BoxBlur(40))
         enhancer = ImageEnhance.Brightness(background)
-        background = enhancer.enhance(0.5)
+        background = enhancer.enhance(0.6)
+        logo = ImageOps.expand(sex, border=10, fill="white")
+        background.paste(logo, (177, 125))        
+        
         draw = ImageDraw.Draw(background)
-        arial = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 30)
-        font = ImageFont.truetype("AnonXMusic/assets/font.ttf", 30)
-        draw.text((1110, 8), unidecode(app.name), fill="white", font=arial)
+        font = ImageFont.truetype("FallenMusic/assets/font2.ttf", 30)
+        font2 = ImageFont.truetype("FallenMusic/assets/font2.ttf", 30)
+        arial = ImageFont.truetype("FallenMusic/assets/font2.ttf", 30)
+        name_font = ImageFont.truetype("FallenMusic/assets/font.ttf", 30)
+        para = textwrap.wrap(title, width=32)
+        j = 0
         draw.text(
-            (55, 560),
+            (1065, 5), f"LAYLA MUSIC", fill="white", font=name_font
+        )
+
+        draw.text(
+            (50, 600),
+            f"{title[:40]}",
+            fill="white",
+            stroke_fill="white",
+            font=font,
+        )
+
+        draw.text(
+            (50, 565),
             f"{channel} | {views[:23]}",
             (255, 255, 255),
             font=arial,
         )
+   
         draw.text(
-            (57, 600),
-            clear(title),
+            (50, 640),
+            f"00:00",
             (255, 255, 255),
-            font=font,
-        )
-        draw.line(
-            [(55, 660), (1220, 660)],
-            fill="white",
-            width=5,
-            joint="curve",
-        )
-        draw.ellipse(
-            [(918, 648), (942, 672)],
-            outline="white",
-            fill="white",
-            width=15,
+            stroke_width=1,
+            stroke_fill="white",
+            font=font2,
         )
         draw.text(
-            (36, 685),
-            "00:00",
-            (255, 255, 255),
-            font=arial,
-        )
-        draw.text(
-            (1185, 685),
+            (1150, 640),
             f"{duration[:23]}",
             (255, 255, 255),
-            font=arial,
+            stroke_width=1,
+            stroke_fill="white",
+            font=font2,
         )
+        draw.line((150,660, 1130,660), width=6, fill="white")
         try:
             os.remove(f"cache/thumb{videoid}.png")
         except:
             pass
         background.save(f"cache/{videoid}.png")
         return f"cache/{videoid}.png"
-    except Exception as e:
-        print(e)
+    except Exception:
         return YOUTUBE_IMG_URL
