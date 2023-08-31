@@ -1,38 +1,27 @@
-from pyrogram.types import InlineKeyboardButton
-
-import config
-from AnonXMusic import app
-
-
 def start_panel(_):
     buttons = [
         [
             InlineKeyboardButton(
-                text="Aᴅᴅ ᴍᴇ",
-                url=f"https://t.me/{BOT_USERNAME}?startgroup=new",
+                text=_["S_B_1"], url=f"https://t.me/{app.username}?startgroup=true"
             ),
-            InlineKeyboardButton(
-                text="Sᴜᴘᴘᴏʀᴛ",
-                url=f"https://t.me/{SUPPORT_GROUP}",
-            )
+            InlineKeyboardButton(text=_["S_B_2"], url=config.SUPPORT_CHAT),
         ],
-        ]
+    ]
     return buttons
 
+
 def private_panel(_):
-     buttons = [
+    buttons = [
         [
             InlineKeyboardButton(
-                text="Aᴅᴅ ᴍᴇ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ",
-                url=f"https://t.me/{BOT_USERNAME}?startgroup=new",
-            ),
+                text=_["S_B_3"],
+                url=f"https://t.me/{app.username}?startgroup=true",
+            )
         ],
-        [
-            InlineKeyboardButton(text="Hᴇʟᴘ & Cᴏᴍᴍᴀɴᴅꜱ", callback_data="settings_back_helper")
-        ],
+        [InlineKeyboardButton(text=_["S_B_4"], callback_data="settings_back_helper")],
         [
             InlineKeyboardButton(text="Sᴜᴘᴘᴏʀᴛ", callback_data="support"),
             InlineKeyboardButton(text="Sᴏᴜʀᴄᴇ", callback_data="gib_source")
-        ]
+        ],
     ]
     return buttons
