@@ -4,4 +4,4 @@ boobs = []
 
 for pussy in os.listdir("AnonXMusic/assets"):
     if pussy.endswith("png"):
-        boobs.append(pussy[:-1])
+        boobs.append(pussy[:-4])
