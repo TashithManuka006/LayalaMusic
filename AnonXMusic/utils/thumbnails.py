@@ -3,7 +3,6 @@ import re
 import random
 import aiofiles
 import aiohttp
-from AnonXMusic.assets import boobs
 import numpy as np
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 from unidecode import unidecode
@@ -44,8 +43,6 @@ def clear(text):
 async def get_thumb(videoid,user_id):
     if os.path.isfile(f"cache/{videoid}_{user_id}.png"):
         return f"cache/{videoid}_{user_id}.png"
-
-    fuck = random.choice(boobs)
     url = f"https://www.youtube.com/watch?v={videoid}"
     try:
         results = VideosSearch(url, limit=1)
@@ -145,5 +142,6 @@ async def get_thumb(videoid,user_id):
             pass
         background.save(f"cache/{videoid}_{user_id}.png")
         return f"cache/{videoid}_{user_id}.png"
-    except Exception:
+    except Exception as e:
+        print(e)
         return YOUTUBE_IMG_URL
